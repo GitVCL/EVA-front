@@ -44,30 +44,41 @@ const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
       setLoading(true);
-      const [apt, sched, cls] = await Promise.all([
-        listAppointmentsApi(),
-        listAvailableSchedulesApi(),
-        listClassesApi(true),
-      ]);
+      try {
+        const [apt, sched, cls] = await Promise.all([
+          listAppointmentsApi(),
+          listAvailableSchedulesApi(),
+          listClassesApi(true),
+        ]);
 
-      const today = new Date().toISOString().slice(0, 10);
-      const in7 = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+        const today = new Date().toISOString().slice(0, 10);
+        const in7 = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString().slice(0, 10);
 
-      setStats({
-        todayAppointments: apt.ok ? apt.data!.filter((a) => a.schedule?.date?.slice(0, 10) === today).length : 0,
-        nextWeek: apt.ok ? apt.data!.filter((a) => {
-          const d = a.schedule?.date?.slice(0, 10);
-          return !!d && d >= today && d <= in7 && a.status === 'confirmed';
-        }).length : 0,
-        confirmed: apt.ok ? apt.data!.filter((a) => a.status === 'confirmed').length : 0,
-        activeClasses: cls.ok ? cls.data!.filter((c) => c.active).length : 0,
-      });
-      setNextSchedules(sched.ok ? sched.data!.slice(0, 5) : []);
-      setRecent(apt.ok ? apt.data!.slice(0, 5) : []);
-      setLoading(false);
+        if (!cancelled) {
+          setStats({
+            todayAppointments: apt.ok && apt.data ? apt.data.filter((a) => a.schedule?.date?.slice(0, 10) === today).length : 0,
+            nextWeek: apt.ok && apt.data ? apt.data.filter((a) => {
+              const d = a.schedule?.date?.slice(0, 10);
+              return !!d && d >= today && d <= in7 && a.status === 'confirmed';
+            }).length : 0,
+            confirmed: apt.ok && apt.data ? apt.data.filter((a) => a.status === 'confirmed').length : 0,
+            activeClasses: cls.ok && cls.data ? cls.data.filter((c) => c.active).length : 0,
+          });
+          setNextSchedules(sched.ok && sched.data ? sched.data.slice(0, 5) : []);
+          setRecent(apt.ok && apt.data ? apt.data.slice(0, 5) : []);
+        }
+      } catch (err) {
+        console.error('Dashboard load failed', err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
