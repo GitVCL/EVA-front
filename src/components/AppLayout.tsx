@@ -9,17 +9,23 @@ interface Props {
   title?: string;
   showBack?: boolean;
   showLogout?: boolean;
+  showLogin?: boolean;
 }
 
 const PUBLIC_PATHS_NO_NAV = ['/login'];
 
-const AppLayout: React.FC<Props> = ({ children, variant = 'public', title, showBack, showLogout }) => {
+const AppLayout: React.FC<Props> = ({ children, variant = 'public', title, showBack, showLogout, showLogin }) => {
   const loc = useLocation();
   const showNav = variant !== 'full' && !PUBLIC_PATHS_NO_NAV.includes(loc.pathname);
 
   return (
     <div className="min-h-[100dvh] w-full bg-bg flex flex-col text-text">
-      <Header title={title} showBack={showBack} showLogout={showLogout} />
+      <Header
+        title={title}
+        showBack={showBack}
+        showLogout={showLogout}
+        showLogin={showLogin ?? variant === 'public'}
+      />
 
       <main className="flex-1 w-full max-w-[520px] mx-auto safe-bottom">
         {children}

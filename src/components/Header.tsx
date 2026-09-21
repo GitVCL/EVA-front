@@ -1,20 +1,21 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ChevronLeft, LogOut } from 'lucide-react';
+import { ChevronLeft, LogOut, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
   title?: string;
   showBack?: boolean;
   showLogout?: boolean;
+  showLogin?: boolean;
   onBack?: () => void;
   right?: React.ReactNode;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, showBack, showLogout, onBack, right }) => {
+const Header: React.FC<HeaderProps> = ({ title, showBack, showLogout, showLogin, onBack, right }) => {
   const nav = useNavigate();
   const loc = useLocation();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const goBack = () => {
     if (onBack) onBack();
@@ -27,7 +28,6 @@ const Header: React.FC<HeaderProps> = ({ title, showBack, showLogout, onBack, ri
     nav('/login', { replace: true });
   };
 
-  // Exibe o logo da marca quando não tem title específico
   const showLogo = !title;
 
   return (
@@ -68,6 +68,16 @@ const Header: React.FC<HeaderProps> = ({ title, showBack, showLogout, onBack, ri
         {/* Lado direito */}
         <div className="flex items-center gap-1 shrink-0">
           {right}
+          {showLogin && !user && (
+            <button
+              onClick={() => nav('/login')}
+              className="h-10 px-3.5 rounded-xl flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/25 hover:bg-primary/15 active:scale-[0.97] transition text-sm font-semibold"
+              aria-label="Entrar como administrador"
+            >
+              <LogIn className="w-4 h-4" />
+              Login
+            </button>
+          )}
           {showLogout && (
             <button
               onClick={handleLogout}
