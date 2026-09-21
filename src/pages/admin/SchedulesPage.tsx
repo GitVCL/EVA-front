@@ -119,7 +119,7 @@ const SchedulesPage: React.FC = () => {
                   }`}
                 >
                   <option value={0} disabled> Selecione a aula...</option>
-                  {classes.map((c) => <option key={c.id} value={c.id}>{c.name} ({c.level})</option>)}
+                  {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
                 {form.classId && (
                   <p className="mt-1.5 text-[11px] text-primary font-semibold ml-1">

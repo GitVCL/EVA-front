@@ -1,6 +1,7 @@
 import React from 'react';
 
 type Variant = 'primary' | 'success' | 'danger' | 'warning' | 'neutral';
+type Size = 'sm' | 'md';
 
 const variants: Record<Variant, string> = {
   primary: 'bg-primary/15 text-primary border-primary/25',
@@ -8,6 +9,11 @@ const variants: Record<Variant, string> = {
   danger: 'bg-danger/15 text-danger border-danger/25',
   warning: 'bg-warning/15 text-warning border-warning/25',
   neutral: 'bg-bg-elev text-text-dim border-border',
+};
+
+const sizes: Record<Size, string> = {
+  sm: 'px-2 py-0.5 text-[10.5px]',
+  md: 'px-2.5 py-1 text-xs',
 };
 
 export const statusBadgeVariant: Record<string, Variant> = {
@@ -27,14 +33,15 @@ export const statusLabel: Record<string, string> = {
 interface BadgeProps {
   children: React.ReactNode;
   variant?: Variant;
+  size?: Size;
   className?: string;
 }
 
-export const Badge: React.FC<BadgeProps> = ({ children, variant = 'neutral', className = '' }) => (
+export const Badge: React.FC<BadgeProps> = ({ children, variant = 'neutral', size = 'md', className = '' }) => (
   <span
     className={`
-      inline-flex items-center gap-1 px-2.5 py-1 rounded-full
-      text-xs font-semibold border ${variants[variant]} ${className}
+      inline-flex items-center gap-1 rounded-full
+      font-semibold border ${variants[variant]} ${sizes[size]} ${className}
     `}
   >
     {children}

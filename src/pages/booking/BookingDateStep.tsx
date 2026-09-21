@@ -24,7 +24,7 @@ const BookingDateStep: React.FC = () => {
       const res = await listAvailableSchedulesApi({
         from: rangeStart,
         to: rangeEnd,
-        classId: state.classId,
+        classId: state.classId ?? undefined,
       });
       if (canceled) return;
       const set = new Set<string>();

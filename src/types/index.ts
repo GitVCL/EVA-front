@@ -9,7 +9,10 @@ export interface Class {
   id: number;
   name: string;
   description: string | null;
+  level: string;
   durationMinutes: number;
+  maxCapacity: number;
+  priceCents?: number;
   active: boolean;
   createdAt?: string;
   updatedAt?: string;
