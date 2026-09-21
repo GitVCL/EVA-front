@@ -16,6 +16,19 @@ const AuthContext = createContext<AuthState | undefined>(undefined);
 const TOKEN_KEY = 'eva_token';
 const USER_KEY = 'eva_user';
 
+function stringifyError(err: unknown): string {
+  if (err == null) return 'Erro desconhecido';
+  if (typeof err === 'string') return err;
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'object') {
+    const anyErr = err as Record<string, unknown>;
+    if (typeof anyErr.message === 'string') return anyErr.message;
+    if (typeof anyErr.error === 'string') return anyErr.error;
+    try { return JSON.stringify(err); } catch { /* fallthrough */ }
+  }
+  return String(err);
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -30,23 +43,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         setToken(savedToken);
         setUser(JSON.parse(savedUser));
-      } catch {}
+      } catch {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+      }
     }
     setLoading(false);
   }, []);
 
   const login = useCallback(async (email: string, password: string): Promise<boolean> => {
     setLoginError(null);
-    const res = await loginApi(email, password);
-    if (!res.ok || !res.token || !res.user) {
-      setLoginError(res.error || 'Credenciais invalidas');
+    try {
+      const res = await loginApi(email, password);
+      if (!res.ok || !res.token || !res.user) {
+        setLoginError(stringifyError(res.error || 'Credenciais inválidas'));
+        return false;
+      }
+      localStorage.setItem(TOKEN_KEY, res.token);
+      localStorage.setItem(USER_KEY, JSON.stringify(res.user));
+      setToken(res.token);
+      setUser(res.user);
+      return true;
+    } catch (err) {
+      setLoginError(stringifyError(err || 'Erro ao conectar'));
       return false;
     }
-    localStorage.setItem(TOKEN_KEY, res.token);
-    localStorage.setItem(USER_KEY, JSON.stringify(res.user));
-    setToken(res.token);
-    setUser(res.user);
-    return true;
   }, []);
 
   const logout = useCallback(() => {

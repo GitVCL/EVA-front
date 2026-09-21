@@ -54,7 +54,7 @@ export const Input: React.FC<InputProps> = ({
         />
         {iconRight && <span className="ml-2.5 text-text-muted shrink-0">{iconRight}</span>}
       </div>
-      {error && <p className="text-xs text-danger ml-0.5">{error}</p>}
+      {error && <p className="text-xs text-danger ml-0.5">{typeof error === 'string' ? error : String(error)}</p>}
     </div>
   );
 };

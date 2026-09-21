@@ -47,8 +47,11 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
           <div className="rounded-2xl bg-bg-elev/60 border border-border p-3 mb-5">
             <p className="text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">Detalhe do erro</p>
-            <p className="text-sm font-mono text-danger break-words">
-              {this.state.error?.message || 'Erro desconhecido'}
+            <p className="text-sm font-mono text-danger break-words whitespace-pre-wrap">
+              {this.state.error?.message ||
+                (typeof (this.state.error as unknown as Record<string, unknown>)?.message === 'string'
+                  ? ((this.state.error as unknown as Record<string, unknown>).message as string)
+                  : 'Erro desconhecido (objeto não tratado)')}
             </p>
             <p className="text-[10.5px] text-text-muted mt-2 leading-relaxed">
               Causas comuns:
