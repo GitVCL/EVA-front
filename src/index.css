@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #050505;
+  --color-bg-card: #0f0f10;
+  --color-bg-elev: #1a1a1c;
+  --color-bg-hover: #242427;
+  --color-border: #2a2a2e;
+  --color-border-light: #3a3a40;
+  --color-text: #f5f5f7;
+  --color-text-dim: #a1a1aa;
+  --color-text-muted: #71717a;
+  --color-primary: #FFD42A;
+  --color-primary-hover: #e6be22;
+  --color-primary-dim: #3d3610;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  min-height: 100dvh;
+  width: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 88px);
+}
