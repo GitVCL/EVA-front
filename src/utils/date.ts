@@ -1,3 +1,4 @@
+import type { Schedule } from '../types';
 import { format, parseISO, addDays, startOfDay, isBefore, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
